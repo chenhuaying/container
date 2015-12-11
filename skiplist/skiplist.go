@@ -89,6 +89,7 @@ func (l *SkipList) Insert(key container.Comparer, value interface{}) {
 			x.level[i].forward = update[i].level[i].forward
 			update[i].level[i].forward = x
 		}
+		l.length += 1
 	}
 
 	if update[0] == l.header {
@@ -103,8 +104,6 @@ func (l *SkipList) Insert(key container.Comparer, value interface{}) {
 		// insert to the last position of the list
 		l.tail = x
 	}
-
-	l.length += 1
 }
 
 func (l *SkipList) SearchNode(key container.Comparer) *SkipListNode {
@@ -135,6 +134,17 @@ func (l *SkipList) LowerBoundNode(key container.Comparer) *SkipListNode {
 	x := l.header
 	for i := l.level - 1; i >= 0; i-- {
 		for x.level[i].forward != nil && x.level[i].forward.key.Less(key) {
+			x = x.level[i].forward
+		}
+	}
+	x = x.level[0].forward
+	return x
+}
+
+func (l *SkipList) LowerBoundNodeFn(key container.Comparer, fn func(x, y container.Comparer) bool) *SkipListNode {
+	x := l.header
+	for i := l.level - 1; i >= 0; i-- {
+		for x.level[i].forward != nil && fn(x.level[i].forward.key, key) {
 			x = x.level[i].forward
 		}
 	}
@@ -202,4 +212,8 @@ func (n *SkipListNode) Key() container.Comparer {
 
 func (n *SkipListNode) Value() interface{} {
 	return n.value
+}
+
+func (l *SkipList) Length() int {
+	return l.length
 }
