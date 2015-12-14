@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"os"
 
-	"github.com/user/container"
+	"github.com/chenhuaying/container"
 )
 
 type SkipListLevel struct {
