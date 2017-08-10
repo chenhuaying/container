@@ -2,7 +2,6 @@ package skiplist
 
 import (
 	"math/rand"
-	"os"
 	"time"
 
 	"github.com/chenhuaying/container"
@@ -20,11 +19,10 @@ type SkipListNode struct {
 }
 
 type SkipList struct {
-	header    *SkipListNode
-	tail      *SkipListNode
-	length    int
-	level     int
-	levelRand *rand.Rand
+	header *SkipListNode
+	tail   *SkipListNode
+	length int
+	level  int
 }
 
 const (
@@ -32,10 +30,8 @@ const (
 	SkipListP = 0.25
 )
 
-var levelRand *rand.Rand
-
 func init() {
-	levelRand = rand.New(rand.NewSource(int64(os.Getpid())))
+	rand.Seed(time.Now().Unix())
 }
 
 func NewSkipListNode(level int, key container.Comparer, value interface{}) *SkipListNode {
@@ -51,7 +47,6 @@ func NewSkipList() *SkipList {
 			skiplist.header.level[i].forward = nil
 		}
 	}
-	skiplist.levelRand = rand.New(rand.NewSource(time.Now().Unix()))
 	return skiplist
 }
 
@@ -59,7 +54,7 @@ func NewSkipList() *SkipList {
 func randomLevel() int {
 	level := 1
 
-	for levelRand.Float32() < 0.25 && level < MaxLevel {
+	for rand.Float32() < 0.25 && level < MaxLevel {
 		level += 1
 	}
 	return level
@@ -68,7 +63,7 @@ func randomLevel() int {
 func (l *SkipList) randomLevel() int {
 	level := 1
 
-	for l.levelRand.Float32() < 0.25 && level < MaxLevel {
+	for rand.Float32() < 0.25 && level < MaxLevel {
 		level += 1
 	}
 	return level
